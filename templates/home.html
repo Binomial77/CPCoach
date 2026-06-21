@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CP Coach — train like you're being judged</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <nav class="nav">
+    <div class="nav__brand">cp<span>://</span>coach</div>
+    <div class="nav__links">
+      <a class="btn btn--ghost" href="/login">Log in</a>
+      <a class="btn btn--primary" href="/signup">Sign up</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero__copy reveal">
+      <div class="eyebrow hero__kicker">AI competitive programming coach</div>
+      <h1>Train like you're <em>being judged.</em></h1>
+      <p class="lead">
+        Log every problem you solve. The coach watches your rating curve and
+        your topic accuracy, then tells you exactly what to grind next —
+        not a generic study plan, a verdict.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="/signup">Start training</a>
+        <a class="btn btn--ghost" href="/login">I have an account</a>
+      </div>
+    </div>
+
+    <div class="hero__visual reveal" style="animation-delay:120ms">
+
+      <div class="globe" aria-hidden="true">
+        <div class="globe__glow"></div>
+        <svg class="globe__svg" viewBox="0 0 400 400">
+          <defs>
+            <radialGradient id="globeBody" cx="35%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#252525"/>
+              <stop offset="55%" stop-color="#0e0e0e"/>
+              <stop offset="100%" stop-color="#050505"/>
+            </radialGradient>
+          </defs>
+          <circle cx="200" cy="200" r="168" fill="url(#globeBody)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <g class="globe__lat" stroke="rgba(255,255,255,0.18)" fill="none" stroke-width="1">
+            <ellipse cx="200" cy="200" rx="168" ry="34"/>
+            <ellipse cx="200" cy="142" rx="150" ry="20"/>
+            <ellipse cx="200" cy="258" rx="150" ry="20"/>
+            <ellipse cx="200" cy="92" rx="98" ry="11"/>
+            <ellipse cx="200" cy="308" rx="98" ry="11"/>
+          </g>
+          <g class="globe__mer" stroke="rgba(255,255,255,0.26)" fill="none" stroke-width="1">
+            <ellipse class="m1" cx="200" cy="200" rx="168" ry="168"/>
+            <ellipse class="m2" cx="200" cy="200" rx="168" ry="168"/>
+            <ellipse class="m3" cx="200" cy="200" rx="168" ry="168"/>
+            <ellipse class="m4" cx="200" cy="200" rx="168" ry="168"/>
+          </g>
+          <line x1="200" y1="32" x2="200" y2="368" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <span class="verdict-badge verdict-badge--ac">AC</span>
+      <span class="verdict-badge verdict-badge--wa">WA</span>
+      <span class="verdict-badge verdict-badge--tle">TLE</span>
+
+      <div class="hero__console-wrap">
+        <div class="console" id="demoConsole">
+          <div class="console__header">
+            <span class="console__dot"></span>
+            judge://guidance-engine — live
+          </div>
+          <div class="console__body" id="demoConsoleBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-section">
+    <div class="section-head reveal">
+      <div class="eyebrow">How it works</div>
+      <h2>Three inputs, one verdict.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal" style="animation-delay:0ms">
+        <div class="step__num">01</div>
+        <h3>Log the submission</h3>
+        <p>Problem rating and topic tags — graphs, trees, DP, greedy, binary search, number theory. Takes five seconds per problem.</p>
+      </div>
+      <div class="step reveal" style="animation-delay:90ms">
+        <div class="step__num">02</div>
+        <h3>The coach reads the pattern</h3>
+        <p>It cross-references your rating trend against per-topic accuracy to find where you're actually losing points.</p>
+      </div>
+      <div class="step reveal" style="animation-delay:180ms">
+        <div class="step__num">03</div>
+        <h3>Get a real roadmap</h3>
+        <p>Not "practice more DP." A specific difficulty band and topic to attack next, regenerated every time you log a solve.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>cp://coach</span>
+    <span id="year">&copy; 2026</span>
+  </footer>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+<script>
+  document.getElementById("year").innerHTML = "&copy; " + new Date().getFullYear();
+
+  CPCoach.typeLines(document.getElementById("demoConsoleBody"), [
+    "$ analyzing submission history...",
+    "[dim]847 problems logged · rating 1612[/dim]",
+    "weak topic detected: [warn]graph theory[/warn] (41% accuracy)",
+    "strong topic: [ok]implementation[/ok] (88% accuracy)",
+    "recommended band: [warn]1500\u20131650[/warn]",
+    "generating roadmap... [ok]done[/ok]",
+    "[ok][ACCEPTED][/ok] roadmap ready \u2014 3 problems queued",
+  ], { speed: 14, lineGap: 480, loop: true });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — CP Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <nav class="nav">
+    <a class="nav__brand" href="/">cp<span>://</span>coach</a>
+    <div class="nav__links">
+      <a class="btn btn--ghost" href="/">Home</a>
+    </div>
+  </nav>
+
+  <div class="dash-head reveal">
+    <div class="eyebrow">Dashboard</div>
+  </div>
+
+  <div class="dash-stats reveal" style="animation-delay:40ms">
+    <div class="rating-pill" id="ratingPill" data-rating="{{ .CurrentRating }}">
+      <span class="rating-pill__value" id="ratingValue">0</span>
+      <span class="rating-pill__tier" id="ratingTierLabel">—</span>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Total solved</div>
+      <div class="stat__value" id="totalSolved" data-value="{{ .TotalSolved }}">0</div>
+    </div>
+  </div>
+
+  <div class="section-head reveal" style="animation-delay:80ms">
+    <div class="eyebrow">Topic breakdown</div>
+    <h2>Where your solves are going.</h2>
+  </div>
+
+  <div class="topics" id="topicsGrid">
+    <div class="topic-card reveal" style="animation-delay:0ms" data-count="{{ .GraphCount }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">graphs</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+    <div class="topic-card reveal" style="animation-delay:40ms" data-count="{{ .TreeCount }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">trees</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+    <div class="topic-card reveal" style="animation-delay:80ms" data-count="{{ .GreedyCount }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">greedy</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+    <div class="topic-card reveal" style="animation-delay:120ms" data-count="{{ .DynamicProgramming }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">dp</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+    <div class="topic-card reveal" style="animation-delay:160ms" data-count="{{ .BinarySearch }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">binary-search</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+    <div class="topic-card reveal" style="animation-delay:200ms" data-count="{{ .NumberTheory }}">
+      <div class="topic-card__top">
+        <span class="topic-card__tag">number-theory</span>
+        <span class="topic-card__count" data-count-el>0</span>
+      </div>
+      <div class="topic-card__bar"><span></span></div>
+    </div>
+  </div>
+
+  <div class="dash-forms-grid" style="margin-top:36px;">
+
+    <div class="card panel reveal">
+      <div class="panel__head">
+        <h2>Log a problem</h2>
+        <span class="hint">updates topic breakdown instantly</span>
+      </div>
+      <form id="problemForm" novalidate>
+        <div class="field">
+          <label for="problemrating">Problem rating</label>
+          <input type="number" id="problemrating" placeholder="e.g. 1500" min="0" required>
+        </div>
+        <div class="field">
+          <label>Tags</label>
+          <div class="chip-group">
+            <label class="chip"><input type="checkbox" id="graph"><span>graphs</span></label>
+            <label class="chip"><input type="checkbox" id="tree"><span>trees</span></label>
+            <label class="chip"><input type="checkbox" id="greedy"><span>greedy</span></label>
+            <label class="chip"><input type="checkbox" id="dp"><span>dp</span></label>
+            <label class="chip"><input type="checkbox" id="binarysearch"><span>binary search</span></label>
+            <label class="chip"><input type="checkbox" id="numbertheory"><span>number theory</span></label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn--primary btn--block" id="problemBtn">Log problem</button>
+      </form>
+    </div>
+
+    <div class="card panel reveal">
+      <div class="panel__head">
+        <h2>Update rating</h2>
+        <span class="hint">syncs your current rating</span>
+      </div>
+      <form id="ratingForm" class="row-inline" novalidate>
+        <div class="field">
+          <label for="rating">New rating</label>
+          <input type="number" id="rating" placeholder="e.g. 1650" min="0" required>
+        </div>
+        <button type="submit" class="btn btn--ghost" id="ratingBtn">Update</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="card panel panel-wide panel--guidance reveal">
+    <div class="panel__head">
+      <h2>AI guidance</h2>
+      <button class="btn btn--ghost" id="guidanceBtn">Run analysis</button>
+    </div>
+    <div class="console console--guidance">
+      <div class="console__header">
+        <span class="console__dot"></span>
+        judge://guidance-engine
+      </div>
+      <div class="console__body" id="guidanceBody">
+        <div class="console__line"><span class="dim">$ awaiting analysis — press "run analysis" above</span></div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<script src="/static/js/app.js"></script>
+<script>
+  /* ---- rating pill: tier color + count-up ---- */
+  const ratingPill = document.getElementById("ratingPill");
+  const ratingValueEl = document.getElementById("ratingValue");
+  const ratingTierEl = document.getElementById("ratingTierLabel");
+
+  function applyRating(rating) {
+    const tier = CPCoach.ratingTier(rating);
+    ratingPill.className = "rating-pill " + tier.key;
+    ratingTierEl.textContent = tier.name;
+    CPCoach.countUp(ratingValueEl, rating, { duration: 900 });
+  }
+  applyRating(parseInt(ratingPill.dataset.rating, 10) || 0);
+
+  /* ---- total solved count-up ---- */
+  const totalSolvedEl = document.getElementById("totalSolved");
+  CPCoach.countUp(totalSolvedEl, parseInt(totalSolvedEl.dataset.value, 10) || 0, { duration: 900 });
+
+  /* ---- topic bars ---- */
+  function refreshTopicBars() {
+    const cards = Array.from(document.querySelectorAll("#topicsGrid .topic-card"));
+    const counts = cards.map((c) => parseInt(c.dataset.count, 10) || 0);
+    const max = Math.max(1, ...counts);
+    cards.forEach((card, i) => {
+      const countEl = card.querySelector("[data-count-el]");
+      CPCoach.countUp(countEl, counts[i], { duration: 800 });
+      const bar = card.querySelector(".topic-card__bar > span");
+      requestAnimationFrame(() => { bar.style.width = (counts[i] / max) * 100 + "%"; });
+    });
+  }
+  refreshTopicBars();
+
+  /* ---- update rating ---- */
+  document.getElementById("ratingForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const btn = document.getElementById("ratingBtn");
+    const input = document.getElementById("rating");
+    const rating = parseInt(input.value, 10);
+    if (!Number.isFinite(rating)) return;
+    if (rating < 0) {
+      CPCoach.toast("Rating can't be negative.", { ok: false });
+      return;
+    }
+
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Updating...";
+
+    const result = await CPCoach.postJSON("/updaterating", { currentrating: rating });
+
+    btn.disabled = false;
+    btn.textContent = original;
+
+    if (result.data && result.data.message) {
+      CPCoach.toast(result.data.message, { ok: true });
+      ratingPill.dataset.rating = rating;
+      applyRating(rating);
+      input.value = "";
+    } else {
+      CPCoach.toast((result.data && result.data.error) || "Couldn't update rating.", { ok: false });
+    }
+  });
+
+  /* ---- log problem ---- */
+  const TAG_IDS = ["graph", "tree", "greedy", "dp", "binarysearch", "numbertheory"];
+  const TAG_TO_CARD_INDEX = { graph: 0, tree: 1, greedy: 2, dp: 3, binarysearch: 4, numbertheory: 5 };
+
+  document.getElementById("problemForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const btn = document.getElementById("problemBtn");
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Logging...";
+
+    const payload = {
+      problemrating: parseInt(document.getElementById("problemrating").value, 10),
+      graph: document.getElementById("graph").checked,
+      tree: document.getElementById("tree").checked,
+      greedy: document.getElementById("greedy").checked,
+      dp: document.getElementById("dp").checked,
+      binarysearch: document.getElementById("binarysearch").checked,
+      numbertheory: document.getElementById("numbertheory").checked,
+    };
+
+    if (!Number.isFinite(payload.problemrating) || payload.problemrating < 0) {
+      CPCoach.toast("Problem rating can't be negative.", { ok: false });
+      btn.disabled = false;
+      btn.textContent = original;
+      return;
+    }
+
+    const result = await CPCoach.postJSON("/postproblem", payload);
+
+    btn.disabled = false;
+    btn.textContent = original;
+
+    if (result.data && result.data.message) {
+      CPCoach.toast(result.data.message, { ok: true });
+
+      const cards = document.querySelectorAll("#topicsGrid .topic-card");
+      TAG_IDS.forEach((id) => {
+        if (payload[id]) {
+          const card = cards[TAG_TO_CARD_INDEX[id]];
+          card.dataset.count = (parseInt(card.dataset.count, 10) || 0) + 1;
+        }
+      });
+      refreshTopicBars();
+
+      const newTotal = (parseInt(totalSolvedEl.dataset.value, 10) || 0) + 1;
+      totalSolvedEl.dataset.value = newTotal;
+      CPCoach.countUp(totalSolvedEl, newTotal, { duration: 600 });
+
+      document.getElementById("problemForm").reset();
+    } else {
+      CPCoach.toast((result.data && result.data.error) || "Couldn't log problem.", { ok: false });
+    }
+  });
+
+  /* ---- get guidance ---- */
+  document.getElementById("guidanceBtn").addEventListener("click", async function () {
+    const btn = this;
+    const body = document.getElementById("guidanceBody");
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Analyzing...";
+
+    body.innerHTML = '<div class="console__line"><span class="dim">$ analyzing your submission history...</span></div>';
+
+    const reEnable = () => { btn.disabled = false; btn.textContent = original; };
+
+    try {
+      const res = await fetch("/getguidance");
+      const data = await res.json();
+
+      if (data.guidance) {
+        const lines = ["$ analysis complete", ...String(data.guidance).split(/\n+/).filter(Boolean)];
+        CPCoach.typeLines(body, lines, { speed: 12, lineGap: 300, loop: false, onDone: reEnable });
+      } else {
+        CPCoach.typeLines(body, [
+          "[err]" + (data.error || "Couldn't generate guidance.") + "[/err]",
+        ], { speed: 12, loop: false, onDone: reEnable });
+        CPCoach.toast(data.error || "Couldn't generate guidance.", { ok: false });
+      }
+    } catch (err) {
+      reEnable();
+      body.innerHTML = '<div class="console__line"><span class="err">network error — couldn\'t reach the guidance engine</span></div>';
+      CPCoach.toast("Network error — couldn't reach the server.", { ok: false });
+    }
+  });
+</script>
+
+</body>
+</html>

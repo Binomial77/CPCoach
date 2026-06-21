@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — CP Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="auth-wrap">
+
+  <div class="auth-side reveal">
+    <div class="nav__brand"><a href="/">cp<span>://</span>coach</a></div>
+    <h2>Pick up where your last submission left off.</h2>
+    <p>Your rating curve, your weak topics, and tonight's recommended problem — all waiting on the other side of this form.</p>
+
+    <div class="console" style="margin-top:34px;max-width:380px;">
+      <div class="console__header">
+        <span class="console__dot"></span>
+        judge://session
+      </div>
+      <div class="console__body">
+        <div class="console__line"><span class="dim">$ authenticating...</span></div>
+        <div class="console__line">welcome back, grinder.</div>
+        <div class="console__line"><span class="ok">[ACCEPTED]</span> session restored<span class="console__cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-main">
+    <div class="card auth-card reveal" style="animation-delay:80ms">
+      <h1>Log in</h1>
+      <p class="sub">Good to see you back on the scoreboard.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@domain.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--block" id="loginBtn">Log in</button>
+        <div class="inline-msg" id="message"></div>
+      </form>
+
+      <div class="switch">New here? <a href="/signup">Create an account</a></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+<script>
+  const form = document.getElementById("loginForm");
+  const btn = document.getElementById("loginBtn");
+  const msg = document.getElementById("message");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = "Verifying...";
+    msg.classList.remove("is-visible", "ok", "err");
+
+    try {
+      const result = await CPCoach.postJSON("/login", {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+      });
+
+      if (result.redirected) {
+        window.location.href = result.url;
+        return;
+      }
+
+      const text = (result.data && (result.data.message || result.data.error)) || "Something went wrong.";
+      msg.textContent = (result.ok ? "\u2713 " : "\u2715 ") + text;
+      msg.classList.add("is-visible", result.ok ? "ok" : "err");
+    } catch (err) {
+      msg.textContent = "Network error — couldn't reach the server.";
+      msg.classList.add("is-visible", "err");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Log in";
+    }
+  });
+</script>
+
+</body>
+</html>
